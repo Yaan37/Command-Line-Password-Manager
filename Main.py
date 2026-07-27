@@ -24,7 +24,7 @@ class Password_Manager:
                     break
 
             while True:
-                username = input("Enter a name for this password: ")
+                username = input("Enter a Username for this password: ")
                 if username == "":
                     print("Username canot be empty!")
                 else:
@@ -32,13 +32,14 @@ class Password_Manager:
 
             while True:
                 # FOR HIDDING PASWORD GONNA ACTIVATE THIS LATER
-                # passw = getpass.getpass("Please enter your password: ")
+                passw = getpass.getpass("Please enter your password: ")
                 
-                passw = input("Please enter your password: ")                               
+                # passw = input("Please enter your password: ")                               
                 if passw == "":
                     print("Password canot be empty!")
                 else:
                     break
+            print("Password has been added!")
 
             self.account = acc
             self.user = username
@@ -127,15 +128,44 @@ class Password_Manager:
         except Exception as e:
             print(f"Error: {e}")
 
-            
+
+
+    def main(self):
+
+        while True:
+                
+            print("1. Add new password")
+            print("2. View saved passwords")
+            print("3. Search password")
+            print("4. Exit")
+
+            option = int(input("Choose any option(1-4): "))
+
+            if option == 1:
+                self.accept_password()
+
+
+            elif option == 2:
+                self.view_save_password()
+
+
+            elif option == 3:
+                self.search_password()
+
+
+            elif option == 4:
+                print("Thankyou for using our Password Manager!")
+                break
+
+
+            else:
+                print("Enter correct option: ")
 
 if __name__ == "__main__":
     pm = Password_Manager()
     # pm.accept_password()
     # pm.view_save_password()
-    pm.search_password(
-
-    )
+    # pm.search_password()
     pm.main()
 
 
@@ -143,20 +173,3 @@ if __name__ == "__main__":
 
 
 
-
-
-
-    # def main(self):
-
-    #     print("1. Add new password")
-    #     print("2. View saved passwords")
-    #     print("3. Search password")
-    #     print("4. Exit")
-
-    #     option = int(input("Choose any option(1-4): "))
-
-    #     if option == 1:
-    #         pass 
-
-    #     elif option == 2:
-    #         pass
