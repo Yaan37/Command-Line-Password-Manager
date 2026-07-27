@@ -44,18 +44,18 @@ class Password_Manager:
             self.user = username
             self.password = passw          
             
-            self.savind_in_file()
+            self.save_in_file()
                 
         except Exception as e:
             print(f"Error: {e}")
 
 
 
+    def save_in_file(self):
 
 
 
 
-    def savind_in_file(self):
 
         try:              
             flag = os.path.exists(self.file_name)
@@ -73,9 +73,27 @@ class Password_Manager:
             print(f"Error: {e}")          
         except Exception as e:
             print(f"Error: {e}")
+
+
+
+    def view_save_password(self):
+
+        try:
+            with open(self.file_name , "r") as file:
+                reader = csv.reader(file)
+                next(reader)
+                for row in reader:
+                    print(f"Account name: {row[0]} \nUser Name: {row[1]} \nPassword: {row[2]}")
+
+        except Exception as e:
+            print(f"Error: {e}")
+
+        
+        
             
 
 if __name__ == "__main__":
     pm = Password_Manager()
     pm.accept_password()
+    # pm.view_save_password()
 
