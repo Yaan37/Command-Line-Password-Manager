@@ -89,11 +89,74 @@ class Password_Manager:
             print(f"Error: {e}")
 
         
-        
+
+    def search_password(self):
+        try:
+
+            flag = os.path.exists(self.file_name)
+            if not flag:
+                print("No password saved!")
+
+
+            while True:
+                search__account = input("Enter account name you wanna Search: ")
+                if search__account == "":
+                    print("account name canot be empty!")
+                else:
+                    break
+
+
+            while True:
+                search__username = input("Enter username you wanna Search: ")
+                if search__username == "":
+                    print("username name canot be empty!")
+                else:
+                    break
+
+
+
+
+            with open(self.file_name , "r") as file:
+                reader = csv.reader(file)
+                next(reader)
+                for row in reader:
+                    if search__account == row[0] and  search__username == row[1]:
+                        print(f"Your password is: {row[2]}")
+                    
+
+        except Exception as e:
+            print(f"Error: {e}")
+
             
 
 if __name__ == "__main__":
     pm = Password_Manager()
-    pm.accept_password()
+    # pm.accept_password()
     # pm.view_save_password()
+    pm.search_password(
 
+    )
+    pm.main()
+
+
+
+
+
+
+
+
+
+    # def main(self):
+
+    #     print("1. Add new password")
+    #     print("2. View saved passwords")
+    #     print("3. Search password")
+    #     print("4. Exit")
+
+    #     option = int(input("Choose any option(1-4): "))
+
+    #     if option == 1:
+    #         pass 
+
+    #     elif option == 2:
+    #         pass
