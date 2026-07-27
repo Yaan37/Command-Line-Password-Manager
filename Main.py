@@ -1,18 +1,27 @@
 import getpass
-
+import csv
+import os 
 
 
 
 class Password_Manager:
     def __init__(self):
+        self.account= None
         self.user = None
         self.password = None
-        self.file_name = None 
-        self.history = {}
+        self.file_name = "accounts.csv" 
+
+
 
     def accept_password(self):
-
         try:
+
+            while True:
+                acc = input("Which platform is this username and password for: ")
+                if acc == "":
+                    print("account name canot be empty!")
+                else:
+                    break
 
             while True:
                 username = input("Enter a name for this password: ")
@@ -31,7 +40,11 @@ class Password_Manager:
                 else:
                     break
 
-            self.history[username] = passw
+            self.account = acc
+            self.user = username
+            self.password = passw          
+            
+            self.savind_in_file()
                 
         except Exception as e:
             print(f"Error: {e}")
@@ -40,10 +53,29 @@ class Password_Manager:
 
 
 
+
+
+    def savind_in_file(self):
+
+        try:              
+            flag = os.path.exists(self.file_name)
+            with open(self.file_name , "a" ,newline="") as file:
+                writer = csv.writer(file)
+
+                if not flag:
+                    writer.writerow(["Account", "Name" , "Password"])
+
+
+
+                writer.writerow([self.account,self.user,self.password])
+
+        except FileNotFoundError as e:
+            print(f"Error: {e}")          
+        except Exception as e:
+            print(f"Error: {e}")
             
 
-
 if __name__ == "__main__":
-
     pm = Password_Manager()
     pm.accept_password()
+
