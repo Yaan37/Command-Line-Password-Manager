@@ -28,24 +28,31 @@ class Password_Manager:
 
 
             while True:
-                flag = False
-                username = input("Enter a Username for this password: ")
-                if username == "":
-                    print("Username canot be empty!")
-                    continue
+                try:
+                        
+                    flag = False
+                    username = input("Enter a Username for this password: ")
+                    if username == "":
+                        print("Username canot be empty!")
+                        continue
 
-                with open(self.file_name , "r") as file:
-                    reader = csv.reader(file)
-                    next(reader)
-                    for key in reader:
-                        if key[0].lower() == acc.lower() and key[1] == username:
-                            print("Account already exists with same username and account!")
-                            flag = True
-                            break
+                    with open(self.file_name , "r") as file:
+                        reader = csv.reader(file)
+                        next(reader)
+                        for key in reader:
+                            if key[0].lower() == acc.lower() and key[1] == username:
+                                print("Account already exists with same username and account!")
+                                flag = True
+                                break
 
-                
-                if not flag:
-                    break
+                    
+                    if not flag:
+                        break
+                except Exception as e:
+                    print(f"Error: {e}")
+
+
+
 
             while True:
                 # FOR HIDDING PASWORD GONNA ACTIVATE THIS LATER
@@ -158,6 +165,70 @@ class Password_Manager:
 
 
 
+    def delete_user(self):
+        try:
+        
+            flag = os.path.exists(self.file_name)
+            if not flag:
+                print("No password saved!")
+                return
+
+            while True:
+                del__account = input("Enter account name you wanna delete: ")
+                if del__account == "":
+                    print("account name canot be empty!")
+                else:
+                    break
+
+            while True:
+                del__username = input("Enter username you wanna delete: ")
+                if del__username == "":
+                    print("username name canot be empty!")
+                else:
+                    break
+
+
+            flag = False
+            with open(self.file_name , "r") as read_file:
+                rows = list(csv.reader(read_file))
+
+            with open(self.file_name , "w" , newline="") as write_file:
+                csv_writer = csv.writer(write_file)
+
+                for row in rows:
+                    if row[0].lower() == del__account.lower() and  row[1].lower() == del__username.lower():
+                        flag = True
+                        continue
+                    csv_writer.writerow(row)
+
+
+
+
+            if flag:
+                print("Account deleted successfully.")
+            else:
+                print("No matching account was found.")
+
+
+                    
+
+
+
+        except Exception as e:
+            print(f"Error: {e}")
+
+        except FileNotFoundError as e:
+            print(f"Error: {e}")
+
+
+
+
+
+
+
+
+
+
     def main(self):
 
             while True:
@@ -166,9 +237,10 @@ class Password_Manager:
                     print("1. Add new password")
                     print("2. View saved passwords")
                     print("3. Search password")
-                    print("4. Exit")
+                    print("4. Delete password")
+                    print("5. Exit")
 
-                    option = int(input("Choose any option(1-4): "))
+                    option = int(input("Choose any option(1-5): "))
 
                     if option == 1:
                         self.accept_password()
@@ -183,6 +255,9 @@ class Password_Manager:
 
 
                     elif option == 4:
+                        self.delete_user()
+
+                    elif option == 5:
                         print("Thankyou for using our Password Manager!")
                         break
 
@@ -198,10 +273,5 @@ if __name__ == "__main__":
     # pm.accept_password()
     # pm.view_save_password()
     # pm.search_password()
+    # pm.delete_user()
     pm.main()
-
-
-
-
-
-
