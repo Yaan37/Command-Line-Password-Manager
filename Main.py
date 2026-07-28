@@ -18,16 +18,33 @@ class Password_Manager:
 
             while True:
                 acc = input("Which platform is this username and password for: ")
+
                 if acc == "":
                     print("account name canot be empty!")
+
                 else:
                     break
 
+
+
             while True:
+                flag = False
                 username = input("Enter a Username for this password: ")
                 if username == "":
                     print("Username canot be empty!")
-                else:
+                    continue
+
+                with open(self.file_name , "r") as file:
+                    reader = csv.reader(file)
+                    next(reader)
+                    for key in reader:
+                        if key[0].lower() == acc.lower() and key[1] == username:
+                            print("Account already exists with same username and account!")
+                            flag = True
+                            break
+
+                
+                if not flag:
                     break
 
             while True:
@@ -84,7 +101,11 @@ class Password_Manager:
                 reader = csv.reader(file)
                 next(reader)
                 for row in reader:
+                    print("--------------------------------")
                     print(f"Account name: {row[0]} \nUser Name: {row[1]} \nPassword: {row[2]}")
+                    print("--------------------------------")
+                    
+
 
         except Exception as e:
             print(f"Error: {e}")
@@ -97,6 +118,7 @@ class Password_Manager:
             flag = os.path.exists(self.file_name)
             if not flag:
                 print("No password saved!")
+                return
 
 
             while True:
@@ -122,7 +144,7 @@ class Password_Manager:
                 reader = csv.reader(file)
                 next(reader)
                 for row in reader:
-                    if search__account == row[0] and  search__username == row[1]:
+                    if search__account.lower() == row[0].lower() and  search__username.lower() == row[1].lower():
                         print(f"Your password is: {row[2]}")
                         flag = True
                         break
