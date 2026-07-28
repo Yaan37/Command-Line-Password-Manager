@@ -201,19 +201,11 @@ class Password_Manager:
                         continue
                     csv_writer.writerow(row)
 
-
-
-
             if flag:
                 print("Account deleted successfully.")
             else:
                 print("No matching account was found.")
-
-
-                    
-
-
-
+             
         except Exception as e:
             print(f"Error: {e}")
 
@@ -223,7 +215,93 @@ class Password_Manager:
 
 
 
+    def update_password(self):
+        try:
+        
+            flag1 = os.path.exists(self.file_name)
+            if not flag1:
+                print("No password saved!")
+                return
 
+            while True:
+                updt__account = input("Enter the account name you want to update: ")
+                if updt__account == "":
+                    print("Account name canot be empty!")
+                else:
+                    break
+
+            while True:
+                updt__username = input("Enter the username of the account you want to update: ")
+                if updt__username == "":
+                    print("Username name canot be empty!")
+                else:
+                    break
+
+            exsist = False
+            with open(self.file_name , "r") as file:
+                reader = csv.reader(file)
+
+                for row in reader:
+                    if row[0].lower() == updt__account.lower() and  row[1].lower() == updt__username.lower():
+                        while True:
+                            old__password = input("Enter your old password: ")
+                            if old__password == "":
+                                print("Password canot be empty!")
+
+                            if row[2] == old__password:
+                                exsist = True
+                                break
+                        
+                            # if exsist:
+                            #     break        
+
+
+
+
+            if exsist:
+
+                while True:
+                    updt__password = input("Enter the updated password: ")
+                    if updt__password == "":
+                        print("Password canot be empty!")
+                    else:
+                        break
+            
+                                            
+
+
+                with open(self.file_name , "r") as read_file:
+                    rows = list(csv.reader(read_file))
+
+
+                    flag2 = False
+                    for row in rows:
+                        if row[0].lower() == updt__account.lower() and  row[1].lower() == updt__username.lower():
+                            row[2] = updt__password
+                            flag2 = True
+                            break
+                
+                with open(self.file_name , "a" , newline="") as write_file:
+                    csv_writer = csv.writer(write_file)
+                    csv_writer.writerows(rows)    
+                
+                if flag2:
+                    print("Password updated successfully.")
+
+
+                
+            else:
+                print("No matching account was found.")
+
+
+
+        except Exception as e:
+            print(f"Error: {e}")
+
+        except FileNotFoundError as e:
+            print(f"Error: {e}")
+
+    
 
 
 
@@ -238,9 +316,10 @@ class Password_Manager:
                     print("2. View saved passwords")
                     print("3. Search password")
                     print("4. Delete password")
-                    print("5. Exit")
+                    print("5. Update password")
+                    print("6. Exit")
 
-                    option = int(input("Choose any option(1-5): "))
+                    option = int(input("Choose any option(1-6): "))
 
                     if option == 1:
                         self.accept_password()
@@ -258,6 +337,9 @@ class Password_Manager:
                         self.delete_user()
 
                     elif option == 5:
+                        self.update_password()                
+
+                    elif option == 6:
                         print("Thankyou for using our Password Manager!")
                         break
 
@@ -274,4 +356,5 @@ if __name__ == "__main__":
     # pm.view_save_password()
     # pm.search_password()
     # pm.delete_user()
+    # pm.update_password()
     pm.main()
