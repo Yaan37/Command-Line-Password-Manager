@@ -118,11 +118,17 @@ class Password_Manager:
 
 
             with open(self.file_name , "r") as file:
+                flag = False
                 reader = csv.reader(file)
                 next(reader)
                 for row in reader:
                     if search__account == row[0] and  search__username == row[1]:
                         print(f"Your password is: {row[2]}")
+                        flag = True
+                        break
+
+                if not flag:
+                    print("No account found with that name and username")
                     
 
         except Exception as e:
@@ -132,34 +138,38 @@ class Password_Manager:
 
     def main(self):
 
-        while True:
-                
-            print("1. Add new password")
-            print("2. View saved passwords")
-            print("3. Search password")
-            print("4. Exit")
+            while True:
+                try:
+                    
+                    print("1. Add new password")
+                    print("2. View saved passwords")
+                    print("3. Search password")
+                    print("4. Exit")
 
-            option = int(input("Choose any option(1-4): "))
+                    option = int(input("Choose any option(1-4): "))
 
-            if option == 1:
-                self.accept_password()
-
-
-            elif option == 2:
-                self.view_save_password()
+                    if option == 1:
+                        self.accept_password()
 
 
-            elif option == 3:
-                self.search_password()
+                    elif option == 2:
+                        self.view_save_password()
 
 
-            elif option == 4:
-                print("Thankyou for using our Password Manager!")
-                break
+                    elif option == 3:
+                        self.search_password()
 
 
-            else:
-                print("Enter correct option: ")
+                    elif option == 4:
+                        print("Thankyou for using our Password Manager!")
+                        break
+
+                    else:
+                        print("Enter correct option: ")
+
+                except Exception:
+                    print("Enter correct option!")
+
 
 if __name__ == "__main__":
     pm = Password_Manager()
