@@ -35,15 +35,15 @@ class Password_Manager:
                     if username == "":
                         print("Username canot be empty!")
                         continue
-
-                    with open(self.file_name , "r") as file:
-                        reader = csv.reader(file)
-                        next(reader)
-                        for key in reader:
-                            if key[0].lower() == acc.lower() and key[1] == username:
-                                print("Account already exists with same username and account!")
-                                flag = True
-                                break
+                    if os.path.exists(self.file_name):
+                        with open(self.file_name , "r") as file:
+                            reader = csv.reader(file)
+                            next(reader)
+                            for key in reader:
+                                if key[0].lower() == acc.lower() and key[1] == username:
+                                    print("Account already exists with same username and account!")
+                                    flag = True
+                                    break
 
                     
                     if not flag:
@@ -87,8 +87,8 @@ class Password_Manager:
             with open(self.file_name , "a" ,newline="") as file:
                 writer = csv.writer(file)
 
-                if not flag:
-                    writer.writerow(["Account", "Name" , "Password"])
+                if not flag or os.path.getsize(self.file_name) == 0:
+                        writer.writerow(["Account", "Name" , "Password"])
 
 
 
@@ -104,15 +104,23 @@ class Password_Manager:
     def view_save_password(self):
 
         try:
+            if not os.path.exists(self.file_name):
+                print("No data saved yet!")
+                return
+            
             with open(self.file_name , "r") as file:
-                reader = csv.reader(file)
-                next(reader)
-                for row in reader:
-                    print("--------------------------------")
-                    print(f"Account name: {row[0]} \nUser Name: {row[1]} \nPassword: {row[2]}")
-                    print("--------------------------------")
-                    
+                reader = file.read().strip()
 
+                if not reader or reader == "Account,Name,Password":
+                    print("No data saved yet!")
+                    return
+
+            
+            for row in self.load_data()[1:]:
+                print("--------------------------------")
+                print(f"Account name: {row[0]} \nUser Name: {row[1]} \nPassword: {row[2]}")
+                print("--------------------------------")
+                    
 
         except Exception as e:
             print(f"Error: {e}")
@@ -213,92 +221,103 @@ class Password_Manager:
             print(f"Error: {e}")
 
 
+    def load_data(self):
 
-
-    def update_password(self):
         try:
-        
-            flag1 = os.path.exists(self.file_name)
-            if not flag1:
-                print("No password saved!")
-                return
 
-            while True:
-                updt__account = input("Enter the account name you want to update: ")
-                if updt__account == "":
-                    print("Account name canot be empty!")
-                else:
-                    break
+            if os.path.exists(self.file_name):
+                with open(self.file_name , "r") as file:
+                    rows = list(csv.reader(file))
 
-            while True:
-                updt__username = input("Enter the username of the account you want to update: ")
-                if updt__username == "":
-                    print("Username name canot be empty!")
-                else:
-                    break
-
-            exsist = False
-            with open(self.file_name , "r") as file:
-                reader = csv.reader(file)
-
-                for row in reader:
-                    if row[0].lower() == updt__account.lower() and  row[1].lower() == updt__username.lower():
-                        while True:
-                            old__password = input("Enter your old password: ")
-                            if old__password == "":
-                                print("Password canot be empty!")
-
-                            if row[2] == old__password:
-                                exsist = True
-                                break
-                        
-                            # if exsist:
-                            #     break        
-
-
-
-
-            if exsist:
-
-                while True:
-                    updt__password = input("Enter the updated password: ")
-                    if updt__password == "":
-                        print("Password canot be empty!")
-                    else:
-                        break
-            
-                                            
-
-
-                with open(self.file_name , "r") as read_file:
-                    rows = list(csv.reader(read_file))
-
-
-                    flag2 = False
-                    for row in rows:
-                        if row[0].lower() == updt__account.lower() and  row[1].lower() == updt__username.lower():
-                            row[2] = updt__password
-                            flag2 = True
-                            break
-                
-                with open(self.file_name , "a" , newline="") as write_file:
-                    csv_writer = csv.writer(write_file)
-                    csv_writer.writerows(rows)    
-                
-                if flag2:
-                    print("Password updated successfully.")
-
-
-                
-            else:
-                print("No matching account was found.")
-
-
+                return rows
 
         except Exception as e:
             print(f"Error: {e}")
 
+
+
+
+
+
+
+
+
+    def update_password(self):
+        try:
+            if not os.path.exists(self.file_name) or os.path.getsize(self.file_name) == 0:
+                print("No password saved!")
+                return
+
+            while True:
+                updt_account = input("Enter the account name you want to update: ")
+                if updt_account == "":
+                    print("Account name cannot be empty!")
+                else:
+                    break
+
+            while True:
+                updt_username = input("Enter the username of the account you want to update: ")
+                if updt_username == "":
+                    print("Username cannot be empty!")
+                else:
+                    break
+
+            with open(self.file_name, "r") as file:
+                reader = list(csv.reader(file))
+
+            account_found = False
+            password_correct = False
+            row_index = None
+
+            for index, row in enumerate(reader[1:], start=1):
+                if row[0].lower() == updt_account.lower() and row[1].lower() == updt_username.lower():
+                    account_found = True
+                    row_index = index
+                    correct_row = row
+
+                    while True:
+                        old_password = input("Enter your old password: ")
+
+                        if old_password == "":
+                            print("Password cannot be empty!")
+                            continue
+
+                        break
+
+                    if old_password == correct_row[2]:
+                        password_correct = True
+                    else:
+                        print("Old password is incorrect")
+
+                    break
+
+            if not account_found:
+                print("Account name or username is incorrect!")
+                return
+
+            if not password_correct:
+                return
+
+            while True:
+                new_password = input("Enter the updated password: ")
+
+                if new_password == "":
+                    print("Password cannot be empty!")
+                else:
+                    break
+
+            reader[row_index][2] = new_password
+
+            with open(self.file_name, "w", newline="") as file:
+                writer = csv.writer(file)
+                writer.writerows(reader)
+
+            print("Password updated successfully!")
+
         except FileNotFoundError as e:
+            print(f"Error: {e}")
+
+        except Exception as e:
             print(f"Error: {e}")
 
     
