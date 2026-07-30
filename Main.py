@@ -16,15 +16,7 @@ class Password_Manager:
     def accept_password(self):
         try:
 
-            while True:
-                acc = input("Which platform is this username and password for: ")
-
-                if acc == "":
-                    print("account name canot be empty!")
-
-                else:
-                    break
-
+            acc = self.get_non_empty_input("Which platform is this username and password for: ")
 
 
             while True:
@@ -80,10 +72,6 @@ class Password_Manager:
 
     def save_in_file(self):
 
-
-
-
-
         try:              
             flag = os.path.exists(self.file_name)
             with open(self.file_name , "a" ,newline="") as file:
@@ -91,8 +79,6 @@ class Password_Manager:
 
                 if not flag or os.path.getsize(self.file_name) == 0:
                     writer.writerow(["Account", "Name" , "Password"])
-
-
 
                 writer.writerow([self.account,self.user,self.password])
 
@@ -113,15 +99,12 @@ class Password_Manager:
             with open(self.file_name , "r") as file:
                 reader = file.read().strip()
 
-
                 if not reader or reader == "Account,Name,Password":
                     print("No data saved yet!")
                     return
 
-
             try:
-                while True:
-                        
+                while True:                      
 
                     print("1. Show password")
                     print("2. Keep it hidden")
@@ -171,22 +154,8 @@ class Password_Manager:
                 return
 
 
-            while True:
-                search__account = input("Enter account name you wanna Search: ")
-                if search__account == "":
-                    print("account name canot be empty!")
-                else:
-                    break
-
-
-            while True:
-                search__username = input("Enter username you wanna Search: ")
-                if search__username == "":
-                    print("username name canot be empty!")
-                else:
-                    break
-
-
+            search__account = self.get_non_empty_input("Enter account name you wanna Search: ")
+            search__username = self.get_non_empty_input("Enter username you wanna Search: ")
 
 
             with open(self.file_name , "r") as file:
@@ -250,19 +219,9 @@ class Password_Manager:
                 print("No password saved!")
                 return
 
-            while True:
-                del__account = input("Enter account name you wanna delete: ")
-                if del__account == "":
-                    print("Account name canot be empty!")
-                else:
-                    break
+            del__account = self.get_non_empty_input("Enter account name you wanna delete: ")
 
-            while True:
-                del__username = input("Enter username you wanna delete: ")
-                if del__username == "":
-                    print("Username name canot be empty!")
-                else:
-                    break
+            del__username = self.get_non_empty_input("Enter username you wanna delete: ")
 
 
             flag = False
@@ -295,7 +254,6 @@ class Password_Manager:
     def load_data(self):
 
         try:
-
             if os.path.exists(self.file_name):
                 with open(self.file_name , "r") as file:
                     rows = list(csv.reader(file))
@@ -309,13 +267,16 @@ class Password_Manager:
             print(f"Error: {e}")
 
 
-
-
-    def get_non_empty_input(self,name,msg):
+    def get_non_empty_input(self,msg):
 
         while True:
-            if msg == "":
-                print(f"{name.Capitalize()} cannot be empty.")
+            res = input(msg) 
+
+            if res.strip() == "":
+                print("This cannot be empty!")
+                
+            else:
+                return res
 
 
 
@@ -327,19 +288,9 @@ class Password_Manager:
                 print("No password saved!")
                 return
 
-            while True:
-                updt_account = input("Enter the account name you want to update: ")
-                if updt_account == "":
-                    print("Account name cannot be empty!")
-                else:
-                    break
-
-            while True:
-                updt_username = input("Enter the username of the account you want to update: ")
-                if updt_username == "":
-                    print("Username cannot be empty!")
-                else:
-                    break
+            updt_account = self.get_non_empty_input("Enter the account name you want to update: ")
+                
+            updt_username = self.get_non_empty_input("Enter the username of the account you want to update: ")
 
             with open(self.file_name, "r") as file:
                 reader = list(csv.reader(file))
@@ -355,7 +306,7 @@ class Password_Manager:
                     correct_row = row
 
                     while True:
-                        old_password = input("Enter your old password: ")
+                        old_password = getpass("Enter your old password: ")
 
                         if old_password == "":
                             print("Password cannot be empty!")
@@ -378,7 +329,7 @@ class Password_Manager:
                 return
 
             while True:
-                new_password = input("Enter the updated password: ")
+                new_password = getpass("Enter the updated password: ")
 
                 if new_password == "":
                     print("Password cannot be empty!")
@@ -400,11 +351,6 @@ class Password_Manager:
             print(f"Error: {e}")
 
     
-
-
-
-
-
     def main(self):
 
             while True:
@@ -446,6 +392,8 @@ class Password_Manager:
 
                 except Exception:
                     print("Enter correct option!")
+
+
 
 
 if __name__ == "__main__":
