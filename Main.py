@@ -1,4 +1,4 @@
-import getpass
+from getpass import getpass
 import csv
 import os 
 
@@ -38,7 +38,9 @@ class Password_Manager:
                     if os.path.exists(self.file_name):
                         with open(self.file_name , "r") as file:
                             reader = csv.reader(file)
-                            next(reader)
+                            if os.path.getsize(self.file_name) != 0:
+                                next(reader)
+
                             for key in reader:
                                 if key[0].lower() == acc.lower() and key[1] == username:
                                     print("Account already exists with same username and account!")
@@ -56,7 +58,7 @@ class Password_Manager:
 
             while True:
                 # FOR HIDDING PASWORD GONNA ACTIVATE THIS LATER
-                passw = getpass.getpass("Please enter your password: ")
+                passw = getpass("Please enter your password: ")
                 
                 # passw = input("Please enter your password: ")                               
                 if passw == "":
@@ -88,7 +90,7 @@ class Password_Manager:
                 writer = csv.writer(file)
 
                 if not flag or os.path.getsize(self.file_name) == 0:
-                        writer.writerow(["Account", "Name" , "Password"])
+                    writer.writerow(["Account", "Name" , "Password"])
 
 
 
@@ -111,16 +113,49 @@ class Password_Manager:
             with open(self.file_name , "r") as file:
                 reader = file.read().strip()
 
+
                 if not reader or reader == "Account,Name,Password":
                     print("No data saved yet!")
                     return
 
-            
-            for row in self.load_data()[1:]:
-                print("--------------------------------")
-                print(f"Account name: {row[0]} \nUser Name: {row[1]} \nPassword: {row[2]}")
-                print("--------------------------------")
-                    
+
+            try:
+                while True:
+                        
+
+                    print("1. Show password")
+                    print("2. Keep it hidden")
+
+                    option = int(input("Choose one option(1-2): "))
+
+                    if option == 1:
+                        # show all passwords    
+                        for row in self.load_data()[1:]:
+                            print("--------------------------------")
+                            print(f"Account name: {row[0]} \nUser Name: {row[1]} \nPassword: {row[2]}")
+                            print("--------------------------------")
+                        break
+
+
+                    elif option == 2:
+                        # hide all passwords    
+                        for row in self.load_data()[1:]:
+                            print("--------------------------------")
+                            print(f"Account name: {row[0]} \nUser Name: {row[1]} \nPassword: { "*" *  len(row[2])}")
+                            print("--------------------------------")
+                        break
+
+
+                    else:
+                        print("Enter correct option")
+
+            except ValueError as e:
+                print("Error: Choose correct value")
+            except Exception as e:
+                print(f"Error: {e}")        
+
+
+
 
         except Exception as e:
             print(f"Error: {e}")
@@ -157,10 +192,44 @@ class Password_Manager:
             with open(self.file_name , "r") as file:
                 flag = False
                 reader = csv.reader(file)
-                next(reader)
+                if os.path.getsize(self.file_name) != 0:
+                    next(reader)
                 for row in reader:
                     if search__account.lower() == row[0].lower() and  search__username.lower() == row[1].lower():
-                        print(f"Your password is: {row[2]}")
+                        try:
+                            while True:
+                                    
+            
+                                print("1. Show password")
+                                print("2. Keep it hidden")
+            
+                                option = int(input("Choose one option(1-2): "))
+            
+                                if option == 1:
+                                    # show all passwords    
+                                    print("--------------------------------")
+                                    print(f"Account name: {row[0]} \nUser Name: {row[1]} \nPassword: {row[2]}")
+                                    print("--------------------------------")
+                                    break
+            
+            
+                                elif option == 2:
+                                    # hide all passwords    
+                                    print("--------------------------------")
+                                    print(f"Account name: {row[0]} \nUser Name: {row[1]} \nPassword: { "*" *  len(row[2])}")
+                                    print("--------------------------------")
+                                    break
+                        
+                                else:
+                                    print("Enter correct option")
+
+
+                        except ValueError as e:
+                            print("Error: Choose correct value")
+                        except Exception as e:
+                            print(f"Error: {e}")        
+                            
+            
                         flag = True
                         break
 
@@ -184,14 +253,14 @@ class Password_Manager:
             while True:
                 del__account = input("Enter account name you wanna delete: ")
                 if del__account == "":
-                    print("account name canot be empty!")
+                    print("Account name canot be empty!")
                 else:
                     break
 
             while True:
                 del__username = input("Enter username you wanna delete: ")
                 if del__username == "":
-                    print("username name canot be empty!")
+                    print("Username name canot be empty!")
                 else:
                     break
 
@@ -203,7 +272,8 @@ class Password_Manager:
             with open(self.file_name , "w" , newline="") as write_file:
                 csv_writer = csv.writer(write_file)
 
-                for row in rows:
+                csv_writer.writerow(["Account", "Name", "Password"])
+                for row in rows[1:]:
                     if row[0].lower() == del__account.lower() and  row[1].lower() == del__username.lower():
                         flag = True
                         continue
@@ -214,11 +284,12 @@ class Password_Manager:
             else:
                 print("No matching account was found.")
              
+        except FileNotFoundError as e:
+            print(f"Error: {e}")
+
         except Exception as e:
             print(f"Error: {e}")
 
-        except FileNotFoundError as e:
-            print(f"Error: {e}")
 
 
     def load_data(self):
@@ -231,12 +302,20 @@ class Password_Manager:
 
                 return rows
 
+            else:
+                return []
+
         except Exception as e:
             print(f"Error: {e}")
 
 
 
 
+    def get_non_empty_input(self,name,msg):
+
+        while True:
+            if msg == "":
+                print(f"{name.Capitalize()} cannot be empty.")
 
 
 
@@ -377,3 +456,7 @@ if __name__ == "__main__":
     # pm.delete_user()
     # pm.update_password()
     pm.main()
+
+
+
+    
